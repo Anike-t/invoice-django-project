@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Invoices</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .top-bar {
+            
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-bar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #002244 60%, #007bff 40%);
+            color: white;
+            border-bottom: 3px solid #0056b3;
+        }
+
+        .top-bar img {
+            height: 50px;
+        }
+
+        .contact-info {
+            font-size: 14px;
+            line-height: 1.6;
+            text-align: right;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-section h2 {
+            font-size: 26px;
+            color: #002244;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            transition: 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background-color: #007bff;
+            color: white;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-section h2 {
+                margin-bottom: 10px;
+            }
+
+            .top-bar .container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .contact-info {
+                text-align: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="container">
+            <img src="{% static 'invoi/ITYogisTech_Web_Logo-1-1.png' %}" alt="Logo">
+            <div class="contact-info">
+                📞 +1 (203) 399-1912<br>
+                ✉ info@yogitech.com<br>
+                🌐 www.ityogitech.com<br>
+                📍 1456 New Ave, NY, USA
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>📄 All Invoices</h2>
+
+            <form method="get" action='' style="margin-bottom: 20px;">
+                <input type="text" name="q" placeholder="Search by invoice no or client name" value="{{ query }}" style="padding: 10px; width: 300px; norder-radius:8px; border:1px ssolid #ccc;">
+                <button type="submit" class="btn-success" style="margin-left: 10px;">🔍 Search</button>
+                <a href="{% url 'create_invoice' %}" class="btn-success">➕ Create New Invoice</a>
+            </form>
+            
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice No</th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Phone No.</th>
+                        <th>Email</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td>{{ invoice.invoice_number }}</td>
+                        <td>{{ invoice.date }}</td>
+                        <td>{{ invoice.bill_to }}</td>
+                        <td>{{ invoice.phone }}</td>
+                        <td>{{ invoice.email }}</td>
+                        <td>
+                            {% if invoice.invoice_file %}
+                                <a href="{{ invoice.invoice_file.url }}" target="_blank">📄 View PDF</a>
+                            {% else %}
+                                <span style="color: #dc3545;">Not Saved</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">No invoices found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        
+        
+    </div>
+    
+    <div style="margin-top: 20px; text-align: center;">
+        <div style="display: inline-block; padding: 10px;">
+            {% if page_obj.has_previous %}
+                <a href="?q={{ query }}&page=1" style="margin: 0 5px;">⏮ First</a>
+                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" style="margin: 0 5px;">⬅ Previous</a>
+            {% endif %}
+    
+            <span style="margin: 0 10px;">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+    
+            {% if page_obj.has_next %}
+                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" style="margin: 0 5px;">Next ➡</a>
+                <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}" style="margin: 0 5px;">Last ⏭</a>
+            {% endif %}
+        </div>
+    </div>
+
+
+</body>
+</html>
