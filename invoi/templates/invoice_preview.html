@@ -4,116 +4,105 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice Preview</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fa; margin: 0; padding: 2rem;">
-  <!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <div style="max-width: 900px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+        
+        
+        <div style="background: linear-gradient(135deg, #000 60%, #008CFF 40%); color: #fff; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between;">
+            <img src="https://media.licdn.com/dms/image/v2/C560BAQE6bkOpY0k-Qw/company-logo_200_200/company-logo_200_200/0/1680149472985?e=1750896000&v=beta&t=NhbIwctJshTry2AeO7pe3H7Q5wGFMIoiSiy5V7E9_tY" alt="ITYogisTech Logo" width="100" style="border-radius: 50%; border: 2px solid #fff;">
+            <div style="text-align: right; font-size: 0.9rem; line-height: 1.6;">
+                📞 +1 (980) 298 9513<br>
+                ✉ info@ityogistech.com<br>
+                🌐 www.ityogistech.com<br>
+                📍 1646 West HWY 160,<br> 
+                Fort Mill, SC USA 297708
+            </div>
+        </div>
 
-<div style="max-width: 900px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+        <div style="padding: 2rem;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 65%; font-size: 0.95rem; line-height: 1.6;">
+                    <p><strong>Invoice No:</strong> {{ invoice.invoice_number }}</p>
+                    <p><strong>Bill To:</strong> {{ invoice.bill_to }}</p>
+                    <p><strong>Address:</strong> {{ invoice.address }}</p>
+                    <p><strong>Place:</strong> {{ invoice.place }}</p>
+                    <p><strong>Phone:</strong> {{ invoice.phone }}</p>
+                    <p><strong>Email:</strong> {{ invoice.email }}</p>
+                </div>
+                <div style="width: 30%; text-align: right; font-size: 0.95rem;">
+                    <p><strong>Date:</strong> {{ invoice.date }}</p>
+                </div>
+            </div>
+        </div>
 
-    <!-- Header -->
-    <div style="background: linear-gradient(135deg, #000 60%, #008CFF 40%); color: #fff; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between;">
-        <img src="https://media.licdn.com/dms/image/v2/C560BAQE6bkOpY0k-Qw/company-logo_200_200/company-logo_200_200/0/1680149472985?e=1750896000&v=beta&t=NhbIwctJshTry2AeO7pe3H7Q5wGFMIoiSiy5V7E9_tY" alt="ITYogisTech Logo" width="100" style="border-radius: 50%; border: 2px solid #fff;">
-        <div style="text-align: right; font-size: 0.9rem; line-height: 1.6;">
-            📞 +1 (203) 399-1912<br>
-            ✉ info@yogitech.com<br>
-            🌐 www.ityogitech.com<br>
-            📍 1456 New Ave, NY, USA
+        
+        <div style="padding: 0 2rem;">
+            <table border="1" cellspacing="0" cellpadding="10" style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                <thead>
+                    <tr style="background-color: #008CFF; color: white;">
+                        <th style="text-align: left;">Description</th>
+                        <th style="text-align: right;">Unit Price</th>
+                        <th style="text-align: center;">Quantity</th>
+                        <th style="text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr style="background-color: {% cycle '#f9f9f9' '#ffffff' %};">
+                        <td>{{ item.description }}</td>
+                        <td style="text-align: right;">${{ item.unit_price }}</td>
+                        <td style="text-align: center;">{{ item.quantity }}</td>
+                        <td style="text-align: right;">${{ item.row_total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="padding: 2rem; text-align: right; font-size: 1.1rem;">
+            <p><strong>Total:</strong> ${{ grand_total }}</p>
+            <p><strong>Due:</strong> ${{ due }}</p>
+        </div>
+
+        <div style="padding: 0 2rem 2rem; font-size: 0.95rem;">
+            <p>Payment will be accepted by check to <strong>"ITYogisTech LLC"</strong>.</p>
+            <p><strong>Yogita Singh</strong><br>Owner & Web Designer</p>
+        </div>
+
+        <div style="background: #f0f0f0; padding: 1rem; font-weight: bold; text-align: center; font-size: 1rem;">
+            Thank you for your business! 😊
+        </div>
+
+        <div style="text-align: center; padding: 1rem;">
+            <a href="{% url 'invoice_list' %}" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">📄 View All Invoices</a>
+
+            
+
+            <a href="?save_invoice=1" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">Save Invoice</a>
+
+            <a href="?email=1" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">📧 Send Invoice to Email</a>
+
+            <a href="{% url 'create_invoice' %}" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">➕ Create New Invoice</a>
+        </div>
+
+        <div style="background: #007bff; color: #fff; padding: 0.4rem 2rem; text-align: right; font-size: 0.85rem;">
+            Page 1 of 1
         </div>
     </div>
 
-    
-    <div style="padding: 2rem;">
-        <div style="display: flex; justify-content: space-between;">
-            <div style="width: 65%; font-size: 0.95rem; line-height: 1.6;">
-                <p><strong>Invoice No:</strong> {{ invoice.invoice_number }}</p>
-                <p><strong>Bill To:</strong> {{ invoice.bill_to }}</p>
-                <p><strong>Address:</strong> {{ invoice.address }}</p>
-                <p><strong>Place:</strong> {{ invoice.place }}</p>
-                <p><strong>Phone:</strong> {{ invoice.phone }}</p>
-                <p><strong>Email:</strong> {{ invoice.email }}</p>
-            </div>
-            <div style="width: 30%; text-align: right; font-size: 0.95rem;">
-                <p><strong>Date:</strong> {{ invoice.date }}</p>
-            </div>
-        </div>
-    </div>
-
-    <div style="padding: 0 2rem;">
-        <table border="1" cellspacing="0" cellpadding="10" style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
-            <thead>
-                <tr style="background-color: #008CFF; color: white;">
-                    <th style="text-align: left;">Description</th>
-                    <th style="text-align: right;">Unit Price</th>
-                    <th style="text-align: center;">Quantity</th>
-                    <th style="text-align: right;">Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                <tr style="background-color: {% cycle '#f9f9f9' '#ffffff' %};">
-                    <td>{{ item.description }}</td>
-                    <td style="text-align: right;">${{ item.unit_price }}</td>
-                    <td style="text-align: center;">{{ item.quantity }}</td>
-                    <td style="text-align: right;">${{ item.row_total }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    
-    <div style="padding: 2rem; text-align: right; font-size: 1.1rem;">
-        <p><strong>Total:</strong> ${{ grand_total }}</p>
-        <p><strong>Due:</strong> ${{ due }}</p>
-    </div>
-
-    
-    <div style="padding: 0 2rem 2rem; font-size: 0.95rem;">
-        <p>Payment will be accepted by check to <strong>"ITYogisTech LLC"</strong>.</p>
-        <p><strong>Yogita Singh</strong><br>Owner & Web Designer</p>
-    </div>
-
-   
-    <div style="background: #f0f0f0; padding: 1rem; font-weight: bold; text-align: center; font-size: 1rem;">
-        Thank you for your business! 😊
-    </div>
-
-    
-    <div style="text-align: center; padding: 1rem;">
-      <a href="{% url 'invoice_list' %}" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">📄 View All Invoices</a>
-     
-    <a href="?save_invoice=1"  style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">Save Invoice</a>
-    
-
-
-        <a href="?email=1" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">📧 Send Invoice to Email</a>
-
-        <a href="{% url 'create_invoice' %}" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;">➕ Create New Invoice</a>
-        
-    </div>
-
-    <!-- Page Footer -->
-    <div style="background: #007bff; color: #fff; padding: 0.4rem 2rem; text-align: right; font-size: 0.85rem;">
-        Page 1 of 1
-    </div>
-</div>
- {% if request.GET.sent == "1" %}
-<script>
-    Swal.fire({
-        title: 'Success',
-        text:'Invoice sent to Client email Successfully!',
-        icon : 'success',
-        confimButtonText :'OK',
-        timer:5000,
-        timerProgressBar:true
-        
-
-    });
-</script>
+    {% if request.GET.sent == "1" %}
+    <script>
+        Swal.fire({
+            title: 'Success',
+            text: 'Invoice sent to Client email Successfully!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            timer: 5000,
+            timerProgressBar: true
+        });
+    </script>
     {% endif %}
-
-    
-
 </body>
 </html>

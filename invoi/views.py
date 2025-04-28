@@ -2,17 +2,22 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-
-from .models import Invoice
-from xhtml2pdf import pisa
-from io import BytesIO
-from django.core.files.base import ContentFile
-from django.db.models import Q
-import random
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.core.files.base import ContentFile
+from io import BytesIO
+from xhtml2pdf import pisa
+import random
+from .models import Invoice
 
+def create_or_edit_invoice(request, invoice_id=None):
+    if invoice_id:
+        invoice = get_object_or_404(Invoice, id=invoice_id)
+        is_edit = True
+    else:
+        invoice = None
+        is_edit = False 
 
-def create_invoice(request):
     if request.method == 'POST':
         bill_to = request.POST.get('bill_to')
         address = request.POST.get('address')
@@ -26,9 +31,9 @@ def create_invoice(request):
         unit_prices = request.POST.getlist('unit_price[]')
         quantities = request.POST.getlist('quantity[]')
 
+
         invoice_items = []
         grand_total = 0
-        
 
         for desc, price, qty in zip(descriptions, unit_prices, quantities):
             try:
@@ -44,36 +49,60 @@ def create_invoice(request):
                     'row_total': row_total,
                 })
             except ValueError:
-
                 continue
-            
-        if invoice_items:
-            
-            random_number = random.randint(100000, 999999)
-            
-            invoice = Invoice.objects.create(
-                bill_to=bill_to,
-                address=address,
-                place=place,
-                phone=phone,
-                email=email,
-                date=date,
-                due=due,
-                invoice_number=random_number
-               
-            
-            )
-           
 
-            request.session['invoice_'] = invoice_items
+        if invoice_items:
+            if is_edit:
+                
+                invoice.bill_to = bill_to
+                invoice.address = address
+                invoice.place = place
+                invoice.phone = phone
+                invoice.email = email
+                invoice.date = date
+                invoice.due = due
+                invoice.save()
+            else:
+            
+                random_number = random.randint(100000, 999999)
+                invoice = Invoice.objects.create(
+                    bill_to=bill_to,
+                    address=address,
+                    place=place,
+                    phone=phone,
+                    email=email,
+                    date=date,
+                    due=due,
+                    invoice_number=random_number
+                )
+
+            
             request.session['invoice_items'] = invoice_items
             request.session['grand_total'] = round(grand_total, 2)
             request.session['due'] = due
-            
 
             return redirect('invoice_preview', invoice_id=invoice.id)
 
-    return render(request, 'create_invoice.html')
+    else:
+        if is_edit:
+            
+            context_invoice = {
+                'bill_to': invoice.bill_to,
+                'address': invoice.address,
+                'place': invoice.place,
+                'phone': invoice.phone,
+                'email': invoice.email,
+                'date': invoice.date.strftime('%Y-%m-%d') if invoice.date else '',
+                'due': invoice.due,
+                
+            }
+        else:
+            context_invoice = {}
+
+    return render(request, 'create_invoice.html', {
+        'invoice': context_invoice,
+        'is_edit': is_edit,
+    })
 
 def invoice_preview(request, invoice_id):
     invoice = get_object_or_404(Invoice, id=invoice_id)
@@ -132,6 +161,8 @@ def invoice_preview(request, invoice_id):
 def invoice_list(request):
     query=request.GET.get('q','')
     invoices = Invoice.objects.all().order_by('-id')
+    
+              
 
     if query:
         invoices = invoices.filter(
@@ -140,8 +171,15 @@ def invoice_list(request):
             Q(phone__startswith=query) |          
             Q(email__startswith=query)            
         )
-    paginator = Paginator(invoices, 9)  
+    paginator = Paginator(invoices, 10)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'invoice_list.html', {'invoices': page_obj, 'query': query, 'page_obj': page_obj})
 
+
+
+
+def delete_invoice(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    invoice.delete()
+    return redirect('invoice_list')  
