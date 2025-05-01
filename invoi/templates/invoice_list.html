@@ -27,60 +27,76 @@
             text-decoration: underline;
         }
 
-        .top-bar {
-            
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-        }
-
-        .top-bar .container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, #002244 60%, #007bff 40%);
-            color: white;
-            border-bottom: 3px solid #0056b3;
-        }
-
-        .top-bar img {
-            height: 50px;
-        }
-
-        .contact-info {
-            font-size: 14px;
-            line-height: 1.6;
-            text-align: right;
-        }
-
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 30px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 40px;
             background-color: #fff;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
+        .top-bar {
+            background: linear-gradient(135deg, #000 60%, #008CFF 40%);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .top-bar img {
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .contact-info {
+            text-align: right;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
         .header-section {
             display: flex;
             justify-content: space-between;
+            flex-wrap: wrap;
             align-items: center;
             margin-bottom: 2rem;
         }
 
         .header-section h2 {
-            font-size: 26px;
+            font-size: clamp(20px, 5vw, 32px);
             color: #002244;
+            margin: 0;
+        }
+        
+
+        .form-search-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .form-search-actions input[type="text"] {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 300px;
+            max-width: 100%;
         }
 
         .btn-success {
             background-color: #28a745;
             color: white;
-            padding: 10px 20px;
+            padding: 10px 18px;
             font-weight: 500;
             border: none;
             border-radius: 8px;
             transition: 0.3s ease;
+            cursor: pointer;
         }
 
         .btn-success:hover {
@@ -112,52 +128,84 @@
             background-color: #f1f8ff;
         }
 
+        .btn {
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            max-height: 600px;
+        }
+
         @media (max-width: 768px) {
             .header-section {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .header-section h2 {
-                margin-bottom: 10px;
+            .form-search-actions {
+                flex-direction: column;
+                width: 100%;
+                align-items: stretch;
             }
 
-            .top-bar .container {
-                flex-direction: column;
+            .form-search-actions input,
+            .btn-success {
+                width: 100%;
+            }
+
+            .top-bar {
                 text-align: center;
+                flex-direction: column;
+                gap: 15px;
             }
 
             .contact-info {
                 text-align: center;
-                margin-top: 10px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <img src="{% static 'invoi/ITYogisTech_Web_Logo-1-1.png' %}" alt="Logo">
-            <div class="contact-info">
+
+    <div style="max-width: 1200px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+        
+        
+        <div style="background: linear-gradient(135deg, #000 60%, #008CFF 40%); color: #fff; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between;">
+            <img src="https://media.licdn.com/dms/image/v2/C560BAQE6bkOpY0k-Qw/company-logo_200_200/company-logo_200_200/0/1680149472985?e=1750896000&v=beta&t=NhbIwctJshTry2AeO7pe3H7Q5wGFMIoiSiy5V7E9_tY" alt="ITYogisTech Logo" width="100" style="border-radius: 50%; border: 2px solid #fff;">
+            <div style="text-align: right; font-size: 0.9rem; line-height: 1.6;">
                 📞 +1 (980) 298 9513<br>
                 ✉ info@ityogistech.com<br>
                 🌐 www.ityogistech.com<br>
                 📍 1646 West HWY 160,<br> 
-                Fort Mill, SC USA 297708
+                Fort Mill, SC USA 29708
             </div>
         </div>
-    </div>
 
     <div class="container">
         <div class="header-section">
             <h2>📄 All Invoices</h2>
-
-            <form method="get" action='' style="margin-bottom: 20px;">
-                <input type="text" name="q" placeholder="Search by invoice no or client name" value="{{ query }}" style="padding: 10px; width: 300px; norder-radius:8px; border:1px ssolid #ccc;">
-                <button type="submit" class="btn-success" style="margin-left: 10px;">🔍 Search</button>
+            <form method="get" action="" class="form-search-actions">
+                <input type="text" name="q" placeholder="Search by invoice no or client name" value="{{ query }}">
+                <button type="submit" class="btn-success">🔍 Search</button>
                 <a href="{% url 'create_invoice' %}" class="btn-success">➕ Create New Invoice</a>
             </form>
-            
         </div>
 
         <div class="table-responsive">
@@ -170,8 +218,8 @@
                         <th>Phone No.</th>
                         <th>Email</th>
                         <th>View</th>
-                        <th>Delete </th>
-                        <th>Edit </th>
+                        <th>Delete</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -182,7 +230,6 @@
                         <td>{{ invoice.bill_to }}</td>
                         <td>{{ invoice.phone }}</td>
                         <td>{{ invoice.email }}</td>
-                        
                         <td>
                             {% if invoice.invoice_file %}
                                 <a href="{{ invoice.invoice_file.url }}" target="_blank">📄 View PDF</a>
@@ -193,49 +240,40 @@
                         <td>
                             <form action="{% url 'delete_invoice' invoice.id %}" method="post" onsubmit="return confirm('Are you sure you want to delete this invoice?');">
                                 {% csrf_token %}
-                                <button type="submit" class="btn" style="background-color: #dc3545; color: white; padding: 8px 12px; border-radius: 8px; font-weight: 500;">🗑️ Delete</button>
+                                <button type="submit" class="btn btn-danger">🗑️ Delete</button>
                             </form>
                         </td>
-
                         <td>
-                            <a href="{% url 'invoice_edit' invoice.id %}" class="btn btn-warning" style="background-color: #ffc107; color: white; padding: 8px 12px; border-radius: 8px; font-weight: 500;">✏️ Edit</a>
+                            <a href="{% url 'invoice_edit' invoice.id %}" class="btn btn-warning">✏️ Edit</a>
                         </td>
-                        
-                        
-                        </td>
-                                                
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="4" style="text-align: center;">No invoices found.</td>
+                        <td colspan="8" style="text-align: center;">No invoices found.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
 
-        
-        
-    </div>
-    
-    <div style="margin-top: 20px; text-align: center;">
-        <div style="display: inline-block; padding: 10px;">
-            {% if page_obj.has_previous %}
-                <a href="?q={{ query }}&page=1" style="margin: 0 5px;">⏮ First</a>
-                <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}" style="margin: 0 5px;">⬅ Previous</a>
-            {% endif %}
-    
-            <span style="margin: 0 10px;">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-            </span>
-    
-            {% if page_obj.has_next %}
-                <a href="?q={{ query }}&page={{ page_obj.next_page_number }}" style="margin: 0 5px;">Next ➡</a>
-                <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}" style="margin: 0 5px;">Last ⏭</a>
-            {% endif %}
+        <div style="margin-top: 20px; text-align: center;">
+            <div style="display: inline-block; padding: 10px;">
+                {% if page_obj.has_previous %}
+                    <a href="?q={{ query }}&page=1">⏮ First</a>
+                    <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">⬅ Previous</a>
+                {% endif %}
+
+                <span style="margin: 0 10px;">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next ➡</a>
+                    <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">Last ⏭</a>
+                {% endif %}
+            </div>
         </div>
     </div>
-
 
 </body>
 </html>

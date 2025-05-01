@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -9,6 +10,7 @@ from io import BytesIO
 from xhtml2pdf import pisa
 import random
 from .models import Invoice
+from django.core.mail.backends.smtp import EmailBackend
 
 def create_or_edit_invoice(request, invoice_id=None):
     if invoice_id:
@@ -30,7 +32,6 @@ def create_or_edit_invoice(request, invoice_id=None):
         descriptions = request.POST.getlist('description[]')
         unit_prices = request.POST.getlist('unit_price[]')
         quantities = request.POST.getlist('quantity[]')
-
 
         invoice_items = []
         grand_total = 0
@@ -137,12 +138,21 @@ def invoice_preview(request, invoice_id):
         html = render_to_string('invoice_mail.html', context)
         result = BytesIO()
         pdf = pisa.CreatePDF(BytesIO(html.encode("UTF-8")), dest=result)
-
+        
         if not pdf.err:
             pdf_file = ContentFile(result.getvalue())
             file_name = f"invoice_{invoice.invoice_number}.pdf"
             invoice.invoice_file.save(file_name, pdf_file)
             invoice.save()
+
+            email_backend = EmailBackend(
+                host='smtp.gmail.com',
+                port=587,
+                username='aniket638601@gmail.com',
+                password='etmg bbdd kdka axez', 
+                use_tls=True
+            )
+
             email = EmailMessage(
                 subject='Your Invoice',
                 body='Please find attached your invoice.',
@@ -161,8 +171,7 @@ def invoice_preview(request, invoice_id):
 def invoice_list(request):
     query=request.GET.get('q','')
     invoices = Invoice.objects.all().order_by('-id')
-    
-              
+       
 
     if query:
         invoices = invoices.filter(
@@ -182,4 +191,54 @@ def invoice_list(request):
 def delete_invoice(request, invoice_id):
     invoice = get_object_or_404(Invoice, id=invoice_id)
     invoice.delete()
+ 
+ 
     return redirect('invoice_list')  
+## invoi/views.py
+from django.shortcuts import get_object_or_404, render
+from django.http import HttpResponseRedirect
+from django_celery_beat.models import PeriodicTask, CrontabSchedule
+from .models import Invoice
+from datetime import datetime
+import uuid
+import json
+
+from django.utils import timezone
+import pytz
+
+def schedule_invoice_email(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+
+    if request.method == 'POST':
+        
+        date_str = request.POST['date']  # Format: '2025-05-02T14:30'
+        scheduled_time_naive = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+
+        # Convert to timezone-aware datetime in IST
+        india_tz = pytz.timezone('Asia/Kolkata')
+        scheduled_time = india_tz.localize(scheduled_time_naive)
+
+        # Create crontab using IST time components
+        schedule, _ = CrontabSchedule.objects.get_or_create(
+            minute=str(scheduled_time.minute),
+            hour=str(scheduled_time.hour),
+            day_of_month=str(scheduled_time.day),
+            month_of_year=str(scheduled_time.month),
+            day_of_week='*',
+            timezone='Asia/Kolkata'  # Ensure crontab uses IST
+        )
+
+        task_name = f"send-invoice-{invoice.id}-{uuid.uuid4()}"
+        PeriodicTask.objects.create(
+            crontab=schedule,
+            name=task_name,
+            task='invoi.tasks.send_invoice_email',
+            args=json.dumps([invoice.id]),
+            one_off=True,
+            start_time=scheduled_time,  # timezone-aware
+        )
+        print('PeriodicTask',PeriodicTask)
+
+        return HttpResponseRedirect(f"?sent=1")
+
+    return render(request, 'schedule_invoice_email.html', {'invoice': invoice})

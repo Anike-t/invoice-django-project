@@ -7,4 +7,10 @@ urlpatterns = [
     path('create-invoice/', views.create_or_edit_invoice, name='create_invoice'), 
     path('invoices/delete/<int:invoice_id>/', views.delete_invoice, name='delete_invoice'),
     path('invoices/<int:invoice_id>/edit/', views.create_or_edit_invoice, name='invoice_edit'),
+    
+    path('invoice/<int:invoice_id>/schedule/', views.schedule_invoice_email, name='schedule_invoice_email'),
+
+    
 ]
+
+

@@ -5,38 +5,21 @@
     <meta charset="UTF-8">
     <title>Invoice</title>
 </head>
-<body style="font-family: Arial, sans-serif; font-size: 12px; color: #000; margin: 0; padding: 0;">
+<body style="font-family: Arial, sans-serif; font-size: 11px; color: #000; margin: 0; padding: 0;">
 
-<table width="100%" cellpadding="10" cellspacing="0" border="0" style="border-collapse: collapse;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; table-layout: fixed;">
 
-    
-    <tr style="background-color:#1e232b; color: #ffffff;">
-        <td colspan="2" style="padding: 5px;">
-            <table width="100%">
-                <tr>
-                    <td width="60%" valign="middle">
-                        <img src="https://media.licdn.com/dms/image/v2/C560BAQE6bkOpY0k-Qw/company-logo_200_200/company-logo_200_200/0/1680149472985?e=1750896000&v=beta&t=NhbIwctJshTry2AeO7pe3H7Q5wGFMIoiSiy5V7E9_tY" width="90" style="border-radius: 50%;">
-                    </td>
-                    
-                    <td width="50%" align="right" valign="middle" style="font-size: 11px;">
-                        <div>Phone:   +1 (980) 298 9513<br>
-                            
-                        <div>Email: info@ityogistech.com
-                        <div>Website: www.ityogistech.com
-                        <div>Address: 1646 West HWY 160,<br> 
-                            Fort Mill, SC USA 297708</div>
-                    </td>
-                </tr>
-            </table>
+    <tr>
+        <td colspan="2" style="padding: 0;">
+            <img src="http://localhost:8000/static/invoi/NavBar.png" alt="Logo" style="width:100%; height:auto; display:block; margin:0;">
         </td>
     </tr>
 
-   
     <tr>
-        <td colspan="2" style="border-bottom: 1px solid #000;">
-            <table width="100%" cellpadding="5" cellspacing="0" style="font-size: 12px;">
+        <td colspan="2" style="border-bottom: 1px solid #333; padding: 8px 15px;">
+            <table width="100%" cellpadding="4" cellspacing="0" style="font-size: 11px;">
                 <tr>
-                    <td width="65%" valign="top">
+                    <td width="65%" valign="top" style="line-height: 1.4;">
                         <strong>Invoice No:</strong> {{ invoice.invoice_number }}<br>
                         <strong>Bill To:</strong> {{ invoice.bill_to }}<br>
                         <strong>Address:</strong> {{ invoice.address }}<br>
@@ -44,7 +27,7 @@
                         <strong>Phone:</strong> {{ invoice.phone }}<br>
                         <strong>Email:</strong> {{ invoice.email }}
                     </td>
-                    <td width="35%" align="right" valign="top">
+                    <td width="35%" align="right" valign="top" style="line-height: 1.4;">
                         <strong>Date:</strong> {{ invoice.date }}
                     </td>
                 </tr>
@@ -52,25 +35,24 @@
         </td>
     </tr>
 
-    
     <tr>
-        <td colspan="2">
-            <table width="100%" border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; font-size: 12px;">
-                <thead style="background-color: #f0f0f0;">
+        <td colspan="2" style="padding: 15px;">
+            <table width="100%" border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; font-size: 11px;">
+                <thead style="background-color: #f1f1f1;">
                     <tr>
-                        <th align="left" style="border: 1px solid #000;">Description</th>
-                        <th align="right" style="border: 1px solid #000;">Unit Price</th>
-                        <th align="center" style="border: 1px solid #000;">Quantity</th>
-                        <th align="right" style="border: 1px solid #000;">Total</th>
+                        <th align="left" style="border: 1px solid #ccc;">Description</th>
+                        <th align="right" style="border: 1px solid #ccc;">Unit Price</th>
+                        <th align="center" style="border: 1px solid #ccc;">Quantity</th>
+                        <th align="right" style="border: 1px solid #ccc;">Total</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for item in items %}
                     <tr>
-                        <td style="border: 1px solid #000;">{{ item.description }}</td>
-                        <td align="right" style="border: 1px solid #000;">${{ item.unit_price }}</td>
-                        <td align="center" style="border: 1px solid #000;">{{ item.quantity }}</td>
-                        <td align="right" style="border: 1px solid #000;">${{ item.row_total }}</td>
+                        <td style="border: 1px solid #ddd;">{{ item.description }}</td>
+                        <td align="right" style="border: 1px solid #ddd;">${{ item.unit_price }}</td>
+                        <td align="center" style="border: 1px solid #ddd;">{{ item.quantity }}</td>
+                        <td align="right" style="border: 1px solid #ddd;">${{ item.row_total }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -78,37 +60,39 @@
         </td>
     </tr>
 
-    
     <tr>
-        <td colspan="2" align="right" style="padding-top: 10px; padding-right: 20px; font-size: 13px;">
-            <p><strong>Total:</strong> ${{ grand_total }}</p>
-            <p><strong>Due:</strong> ${{ due }}</p>
+        <td colspan="2" align="right" style="padding: 0 15px 15px 0; font-size: 12px;">
+            <p style="margin: 5px 0;"><strong>Total:</strong> ${{ grand_total }}</p>
+            <p style="margin: 5px 0;"><strong>Due:</strong> ${{ due }}</p>
         </td>
     </tr>
 
-    
     <tr>
-        <td colspan="2" style="padding-top: 50px;">
-            <p style="margin: 0;">Payment will be accepted by check to <strong>"TiYogisTech LLC"</strong>.</p>
-            <br>
+        <td colspan="2" style="padding: 20px 15px;">
+            <p style="margin: 0 0 10px 0;">Payment will be accepted by check to <strong>"ITYogisTech LLC"</strong>.</p>
+
+            
+            <span style="margin-top: 20px; margin-bottom: 0px;">
+                <img src="http://localhost:8000/static/invoi/signature.png" alt="Signature" style="width: 80px; height:auto;">
+            </span><br>
+
             <strong>Yogita Singh</strong><br>
             <span>Owner & Web Designer</span>
         </td>
     </tr>
 
-    
     <tr>
-        <td colspan="2" align="center" style="font-weight: bold; padding-top: 20px;">
+        <td colspan="2" align="center" style="font-weight: bold; padding: 5px; font-size: 11px;">
             Thank you for your business.
         </td>
     </tr>
 
-    
     <tr style="background-color: #007bff; color: #ffffff;">
-        <td colspan="2" align="right" style="font-size: 10px; padding: 5px 10px;">
+        <td colspan="2" align="right" style="font-size: 10px; padding: 4px 10px;">
             Page 1 of 1
         </td>
     </tr>
+
 </table>
 
 </body>

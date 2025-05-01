@@ -168,19 +168,21 @@
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="container">
-            <img src="{% static 'invoi/ITYogisTech_Web_Logo-1-1.png' %}" alt="Logo">
-            <div class="contact-info">
-                📞 +1 (980) 298 9513<br>
-                ✉ info@ityogistech.com<br>
-                🌐 www.ityogistech.com<br>
-                📍 1646 West HWY 160,<br> 
-                Fort Mill, SC USA 297708
+    <div style="max-width: 1000px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+        
+        <div style="max-width: 1000px; margin: auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.1); overflow: hidden;">
+        
+        
+            <div style="background: linear-gradient(135deg, #000 60%, #008CFF 40%); color: #fff; padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between;">
+                <img src="https://media.licdn.com/dms/image/v2/C560BAQE6bkOpY0k-Qw/company-logo_200_200/company-logo_200_200/0/1680149472985?e=1750896000&v=beta&t=NhbIwctJshTry2AeO7pe3H7Q5wGFMIoiSiy5V7E9_tY" alt="ITYogisTech Logo" width="100" style="border-radius: 50%; border: 2px solid #fff;">
+                <div style="text-align: right; font-size: 0.9rem; line-height: 1.6;">
+                    📞 +1 (980) 298 9513<br>
+                    ✉ info@ityogistech.com<br>
+                    🌐 www.ityogistech.com<br>
+                    📍 1646 West HWY 160,<br> 
+                    Fort Mill, SC USA 29708
+                </div>
             </div>
-        </div>
-    </div>
-    
 
     <div class="container">
         <form method="post">
@@ -257,7 +259,7 @@
             <button type="submit" class="btn">
                 {% if is_edit %} Update Invoice {% else %} Submit Invoice {% endif %}
             </button>
-        
+            
             <p style="margin-top: 25px;">Payment will be accepted by check to <strong>ITYogisTech LLC</strong>.</p>
             <p><strong>Yogita Singh</strong><br>Owner & Web Designer</p>
             <a href="{% url 'invoice_list' %}" style="background: #008CFF; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 5px; font-weight: bold;" class="btn">Invoice List</a>
